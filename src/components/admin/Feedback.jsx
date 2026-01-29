@@ -5,7 +5,7 @@ const Feedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/flexify/admin/feedback")
+    axios.get("http://localhost:8080/flexify/admin/feedback")
       .then(res => setFeedbacks(res.data));
   }, []);
 

@@ -5,7 +5,7 @@ const Members = () => {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/flexify/admin/members")
+    axios.get("http://localhost:8080/flexify/admin/members")
       .then(res => setMembers(res.data));
   }, []);
 

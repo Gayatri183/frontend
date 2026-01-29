@@ -5,7 +5,7 @@ const Trainers = () => {
   const [trainers, setTrainers] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8081/flexify/admin/trainers")
+    axios.get("http://localhost:8080/flexify/admin/trainers")
       .then(res => setTrainers(res.data));
   }, []);
 
