@@ -5,7 +5,7 @@ const Plans = () => {
   const [plans, setPlans] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/flexify/admin/plans")
+    axios.get("http://localhost:8081/flexify/admin/plans")
       .then(res => setPlans(res.data));
   }, []);
 

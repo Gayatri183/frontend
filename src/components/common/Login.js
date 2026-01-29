@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/authSlice";
 
@@ -8,16 +8,18 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();   // 🔹 Redux
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+    setLoading(true);
+
     try {
       const response = await axios.post(
-        "http://localhost:8080/flexify/login",
+        "http://localhost:8081/flexify/login",
         { email, password }
       );
 
@@ -27,11 +29,10 @@ function Login() {
       dispatch(
         loginSuccess({
           user: user,
-          role: user.role.rid, // role id
+          role: user.role.rid,
         })
       );
 
-      // optional: still keep localStorage if needed
       localStorage.setItem("user", JSON.stringify(user));
 
       // 🔹 Role-based navigation
@@ -44,49 +45,81 @@ function Login() {
       }
     } catch (err) {
       setError("Invalid email or password");
+    } finally {
+      setLoading(false);
     }
-    
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
-      <form
-        onSubmit={handleLogin}
-        className="p-4 bg-white rounded shadow"
-        style={{ width: "100%", maxWidth: "380px" }}
-      >
-        <h3 className="text-center mb-3">Login</h3>
+    <div className="min-vh-100 d-flex justify-content-center align-items-center bg-light">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-md-5">
+            <div className="card shadow-lg border-0 rounded-lg">
+              <div className="card-body p-5">
+                <div className="text-center mb-4">
+                  <h3 className="fw-bold text-primary">Welcome Back</h3>
+                  <p className="text-muted">Sign in to continue to Flexify</p>
+                </div>
 
-        {error && <div className="alert alert-danger">{error}</div>}
+                {error && (
+                  <div className="alert alert-danger d-flex align-items-center" role="alert">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div>{error}</div>
+                  </div>
+                )}
 
-        <div className="form-floating mb-3">
-          <input
-            type="email"
-            className="form-control"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <label>Email</label>
+                <form onSubmit={handleLogin}>
+                  <div className="form-floating mb-3">
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="floatingEmail"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="floatingEmail">Email address</label>
+                  </div>
+
+                  <div className="form-floating mb-4">
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="floatingPassword"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="floatingPassword">Password</label>
+                  </div>
+
+                  <div className="d-grid mb-3">
+                    <button
+                      className="btn btn-primary btn-lg"
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? "Signing in..." : "Sign In"}
+                    </button>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-muted mb-0">
+                      Don't have an account?{" "}
+                      <Link to="/common/register" className="text-primary text-decoration-none fw-medium">
+                        Create Account
+                      </Link>
+                    </p>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div className="form-floating mb-3">
-          <input
-            type="password"
-            className="form-control"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <label>Password</label>
-        </div>
-
-        <button className="btn btn-primary w-100" type="submit">
-          Login
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

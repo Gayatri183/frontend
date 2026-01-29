@@ -5,7 +5,7 @@ const Payments = () => {
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/flexify/admin/payments")
+    axios.get("http://localhost:8081/flexify/admin/payments")
       .then(res => setPayments(res.data));
   }, []);
 
